@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from rest_framework import generics, status
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from .serializers import UserModelSerializer, UserSerializer,LoginSerializer
@@ -23,7 +22,6 @@ hello_auth_view = HelloAuthView.as_view()
 class UserCreateView(generics.GenericAPIView):
     serializer_class = UserModelSerializer
 
-    @swagger_auto_schema(operation_description="description")
     def post(self, request):
         data = request.data
         serializer= self.serializer_class(data=data )
@@ -53,43 +51,43 @@ user_creation = UserCreateView.as_view()
         
 # register_user = RegisterView.as_view()
 
-class LoginView(APIView):
-    serializer_class = LoginSerializer
+# class LoginView(APIView):
+#     serializer_class = LoginSerializer
 
     
-    @swagger_auto_schema(operation_description="login")
-    def post(self,request):
+#     @swagger_auto_schema(operation_description="login")
+#     def post(self,request):
      
-        data = request.data
-        username = data['username']
-        password = data['password']
-        user = User.objects.filter(email= username).first()
-        if user is None:
-            raise AuthenticationFailed(detail="User Not Found ")
-        if not user.check_password(password):
-            raise AuthenticationFailed(detail="Password is Incorrect")
+#         data = request.data
+#         username = data['username']
+#         password = data['password']
+#         user = User.objects.filter(email= username).first()
+#         if user is None:
+#             raise AuthenticationFailed(detail="User Not Found ")
+#         if not user.check_password(password):
+#             raise AuthenticationFailed(detail="Password is Incorrect")
 
-        payload = {
-            "id": user.id,
-            "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=5),
-            "iat": datetime.datetime.utcnow()
-        }
-        token = jwt.encode(payload,'secret',algorithm='HS256')
+#         payload = {
+#             "id": user.id,
+#             "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=5),
+#             "iat": datetime.datetime.utcnow()
+#         }
+#         token = jwt.encode(payload,'secret',algorithm='HS256')
 
-        response = Response()
-        response.set_cookie(key='jwt', value=token, httponly=True)
-        response.data = {
-            'jwt':token 
-        }
+#         response = Response()
+#         response.set_cookie(key='jwt', value=token, httponly=True)
+#         response.data = {
+#             'jwt':token 
+#         }
 
-        return response
+#         return response
 
-login_view = LoginView.as_view()
+# login_view = LoginView.as_view()
 
 
 class GetUser(APIView):
     
-    @swagger_auto_schema(operation_description="get a single user")
+   
     def get(self, request):
         token = request.COOKIES.get('jwt')
         if not token:
@@ -106,7 +104,7 @@ getuser = GetUser.as_view()
 
 
 class LogOut(APIView):
-    @swagger_auto_schema(operation_description="logout")
+
     def post(self, request):
         response = Response()
         response.delete_cookie('jwt')

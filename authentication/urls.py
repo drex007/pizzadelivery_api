@@ -1,8 +1,8 @@
 
 from django.contrib import admin
 from django.urls import path
-from .views import hello_auth_view, user_creation, login_view,getuser,logout_view
-# register_user,
+from .views import hello_auth_view, user_creation,getuser,logout_view
+# register_user,login_view,
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('auth/',hello_auth_view, name="hello-auth"),
